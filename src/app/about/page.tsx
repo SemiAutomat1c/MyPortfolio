@@ -127,9 +127,9 @@ export default function AboutPage() {
             <div className="absolute left-0 top-2 w-4 h-4 rounded-full bg-blue-500"></div>
             <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-1">Early Childhood Education</h3>
             <p className="text-gray-500 dark:text-gray-400 text-sm mb-4">Central Elementary School • 2006 - 2008</p>
-            <p className="text-gray-700 dark:text-gray-300">
+          <p className="text-gray-700 dark:text-gray-300">
               Started my educational journey with fundamental learning and social skills development.
-            </p>
+          </p>
           </div>
         </div>
       </div>
