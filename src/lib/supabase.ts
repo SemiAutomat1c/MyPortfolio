@@ -1,14 +1,23 @@
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
+import type { Database } from '@/types/supabase';
 
-export const supabase = createClientComponentClient();
+// Create a strongly typed Supabase client
+export const supabase = createClientComponentClient<Database>({
+  supabaseUrl: process.env.NEXT_PUBLIC_SUPABASE_URL,
+  supabaseKey: process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
+});
 
-// Function to create or get the storage bucket
+// Function to create or get the storage bucket with better error handling
 export async function createBlogImagesBucket() {
   try {
     // First check if bucket exists
     const { data: buckets, error: listError } = await supabase.storage.listBuckets();
     
     if (listError) {
+      if (listError.message.includes('storage not enabled')) {
+        console.error('Supabase Storage is not enabled for this project');
+        return false;
+      }
       console.error('Error listing buckets:', listError);
       return false;
     }
@@ -23,6 +32,10 @@ export async function createBlogImagesBucket() {
       });
 
       if (createError) {
+        if (createError.message.includes('duplicate key value')) {
+          // Bucket already exists but wasn't listed (possible race condition)
+          return true;
+        }
         console.error('Error creating bucket:', createError);
         return false;
       }
