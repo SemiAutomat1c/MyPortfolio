@@ -4,6 +4,7 @@ import { useState, useEffect, Suspense } from 'react';
 import { supabase } from '@/lib/supabase';
 import { useRouter } from 'next/navigation';
 import { useSearchParams } from 'next/navigation';
+import { useAuth } from '@/lib/AuthContext';
 
 function LoginForm() {
   const [email, setEmail] = useState('');
@@ -12,6 +13,14 @@ function LoginForm() {
   const [error, setError] = useState<string | null>(null);
   const router = useRouter();
   const searchParams = useSearchParams();
+  const { session } = useAuth();
+
+  useEffect(() => {
+    // Redirect to admin if already logged in
+    if (session) {
+      router.push('/admin/posts');
+    }
+  }, [session, router]);
 
   useEffect(() => {
     // Get error message from URL if it exists
@@ -27,19 +36,14 @@ function LoginForm() {
     setError(null);
 
     try {
-      const { data, error } = await supabase.auth.signInWithPassword({
+      const { error } = await supabase.auth.signInWithPassword({
         email,
         password,
       });
 
       if (error) throw error;
-
-      if (data?.session) {
-        // Refresh the page to ensure middleware picks up the new session
-        router.refresh();
-        // Then redirect to admin
-        router.push('/admin/posts');
-      }
+      
+      // No need to manually redirect here as the AuthContext will handle the session change
     } catch (error: any) {
       console.error('Login error:', error);
       setError(error.message);

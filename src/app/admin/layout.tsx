@@ -4,6 +4,8 @@ import Link from 'next/link';
 import { useTheme } from 'next-themes';
 import { useRouter } from 'next/navigation';
 import { supabase } from '@/lib/supabase';
+import { useAuth } from '@/lib/AuthContext';
+import { useEffect } from 'react';
 
 export default function AdminLayout({
   children,
@@ -12,16 +14,35 @@ export default function AdminLayout({
 }) {
   const { theme, setTheme } = useTheme();
   const router = useRouter();
+  const { session, loading } = useAuth();
+
+  useEffect(() => {
+    if (!loading && !session) {
+      router.push('/login');
+    }
+  }, [session, loading, router]);
 
   const handleLogout = async () => {
     try {
       const { error } = await supabase.auth.signOut();
       if (error) throw error;
-      router.push('/login');
+      // No need to manually redirect, AuthContext will handle it
     } catch (error) {
       console.error('Error logging out:', error);
     }
   };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-black dark:border-white"></div>
+      </div>
+    );
+  }
+
+  if (!session) {
+    return null;
+  }
 
   return (
     <div className="min-h-screen bg-white dark:bg-dark">
