@@ -1,5 +1,3 @@
-'use client';
-
 import Hero from '@/components/Hero';
 import Skills from '@/components/Skills';
 import Experience from '@/components/Experience';
@@ -9,8 +7,7 @@ import { SiTypescript, SiVite } from 'react-icons/si';
 import Image from 'next/image';
 import { getAllPosts } from '@/lib/posts';
 
-// Add revalidation time
-export const revalidate = 60; // Revalidate every 60 seconds
+export const dynamic = 'force-dynamic';
 
 export default async function Home() {
   const posts = await getAllPosts();
