@@ -13,10 +13,21 @@ const processContent = (content: string): string => {
     .replace(/<img([^>]*)>/g, (match, attributes) => {
       // Extract src and alt from attributes
       const src = attributes.match(/src="([^"]*)"/)?.[1] || '';
-      const alt = attributes.match(/alt="([^"]*)"/)?.[1] || 'Image';
+      const alt = attributes.match(/alt="([^"]*)"/)?.[1] || '';
       return `![${alt}](${src})`;
     })
-    // Add any other HTML to MDX conversions here if needed
+    // Convert other HTML tags to markdown
+    .replace(/<p>(.*?)<\/p>/g, '$1\n\n')
+    .replace(/<br\s*\/?>/g, '\n')
+    .replace(/<strong>(.*?)<\/strong>/g, '**$1**')
+    .replace(/<em>(.*?)<\/em>/g, '*$1*')
+    .replace(/<h1>(.*?)<\/h1>/g, '# $1\n')
+    .replace(/<h2>(.*?)<\/h2>/g, '## $1\n')
+    .replace(/<h3>(.*?)<\/h3>/g, '### $1\n')
+    .replace(/<ul>(.*?)<\/ul>/g, '$1\n')
+    .replace(/<li>(.*?)<\/li>/g, '- $1\n')
+    .replace(/<code>(.*?)<\/code>/g, '`$1`')
+    .replace(/<pre><code>(.*?)<\/code><\/pre>/g, '```\n$1\n```')
     .trim();
 };
 
