@@ -76,7 +76,7 @@ export async function createPost(post: Omit<Post, 'id' | 'created_at' | 'updated
     return null;
   }
 
-  await triggerRevalidation(['/posts', `/posts/${post.slug}`]);
+  await triggerRevalidation(['/', '/posts', `/posts/${post.slug}`]);
   return data;
 }
 
@@ -93,7 +93,7 @@ export async function updatePost(id: string, post: Partial<Post>): Promise<Post 
     return null;
   }
 
-  await triggerRevalidation(['/posts', `/posts/${post.slug}`]);
+  await triggerRevalidation(['/', '/posts', `/posts/${post.slug}`]);
   return data;
 }
 
@@ -108,6 +108,6 @@ export async function deletePost(id: string, slug: string): Promise<boolean> {
     return false;
   }
 
-  await triggerRevalidation(['/posts', `/posts/${slug}`]);
+  await triggerRevalidation(['/', '/posts', `/posts/${slug}`]);
   return true;
 } 
