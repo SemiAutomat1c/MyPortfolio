@@ -1,23 +1,107 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, Suspense } from 'react';
 import Link from 'next/link';
 import { supabase } from '@/lib/supabase';
 import { BlogPost, createBlogImagesBucket } from '@/lib/supabase';
 
+// Loading component
+function LoadingState() {
+  return (
+    <div className="flex items-center justify-center min-h-[200px]">
+      <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-black dark:border-white"></div>
+    </div>
+  );
+}
+
+// Posts table component
+function PostsTable({ posts, onTogglePublish, onDelete }: { 
+  posts: BlogPost[], 
+  onTogglePublish: (post: BlogPost) => Promise<void>,
+  onDelete: (id: string) => Promise<void>
+}) {
+  return (
+    <div className="bg-white dark:bg-[#1a1b1e] border border-gray-200 dark:border-gray-800 rounded-lg overflow-hidden">
+      <table className="w-full">
+        <thead>
+          <tr className="border-b border-gray-200 dark:border-gray-800">
+            <th className="text-left text-gray-600 dark:text-gray-400 text-sm font-normal px-6 py-3">TITLE</th>
+            <th className="text-left text-gray-600 dark:text-gray-400 text-sm font-normal px-6 py-3">STATUS</th>
+            <th className="text-left text-gray-600 dark:text-gray-400 text-sm font-normal px-6 py-3">DATE</th>
+            <th className="text-right text-gray-600 dark:text-gray-400 text-sm font-normal px-6 py-3">ACTIONS</th>
+          </tr>
+        </thead>
+        <tbody>
+          {posts.map((post) => (
+            <tr key={post.id} className="border-t border-gray-200 dark:border-gray-800">
+              <td className="px-6 py-4">
+                <div className="text-black dark:text-white">{post.title}</div>
+                <div className="text-sm text-gray-600 dark:text-gray-400">{post.excerpt}</div>
+              </td>
+              <td className="px-6 py-4">
+                <span className={`inline-block px-2 py-1 text-xs rounded-full ${
+                  post.published 
+                    ? 'bg-green-100 dark:bg-green-900/20 text-green-700 dark:text-green-400' 
+                    : 'bg-yellow-100 dark:bg-yellow-900/20 text-yellow-700 dark:text-yellow-400'
+                }`}>
+                  {post.published ? 'Published' : 'Draft'}
+                </span>
+              </td>
+              <td className="px-6 py-4 text-gray-600 dark:text-gray-400">
+                {new Date(post.created_at).toLocaleDateString('en-US', {
+                  year: 'numeric',
+                  month: 'short',
+                  day: 'numeric'
+                })}
+              </td>
+              <td className="px-6 py-4 text-right space-x-4">
+                <Link href={`/admin/posts/${post.id}`} className="text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300">
+                  Edit
+                </Link>
+                <button
+                  onClick={() => onTogglePublish(post)}
+                  className="text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300"
+                >
+                  {post.published ? 'Unpublish' : 'Publish'}
+                </button>
+                <button
+                  onClick={() => onDelete(post.id)}
+                  className="text-red-600 dark:text-red-400 hover:text-red-800 dark:hover:text-red-300"
+                >
+                  Delete
+                </button>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  );
+}
+
 export default function AdminPosts() {
   const [posts, setPosts] = useState<BlogPost[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    // Create bucket if it doesn't exist
-    createBlogImagesBucket().catch(console.error);
+    // Initialize bucket and fetch posts
+    const init = async () => {
+      try {
+        await createBlogImagesBucket();
+        await fetchPosts();
+      } catch (err) {
+        console.error('Initialization error:', err);
+        setError('Failed to initialize. Please try refreshing the page.');
+      }
+    };
     
-    // Fetch posts
-    fetchPosts();
+    init();
   }, []);
 
   async function fetchPosts() {
+    setLoading(true);
+    setError(null);
     try {
       const { data, error } = await supabase
         .from('posts')
@@ -28,6 +112,7 @@ export default function AdminPosts() {
       setPosts(data || []);
     } catch (error) {
       console.error('Error fetching posts:', error);
+      setError('Failed to load posts. Please try again.');
     } finally {
       setLoading(false);
     }
@@ -44,6 +129,7 @@ export default function AdminPosts() {
       await fetchPosts();
     } catch (error) {
       console.error('Error toggling publish status:', error);
+      setError('Failed to update post status. Please try again.');
     }
   }
 
@@ -60,15 +146,8 @@ export default function AdminPosts() {
       await fetchPosts();
     } catch (error) {
       console.error('Error deleting post:', error);
+      setError('Failed to delete post. Please try again.');
     }
-  }
-
-  if (loading) {
-    return (
-      <div className="flex items-center justify-center min-h-[200px]">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-black dark:border-white"></div>
-      </div>
-    );
   }
 
   return (
@@ -87,61 +166,23 @@ export default function AdminPosts() {
           </Link>
         </div>
 
-        <div className="bg-white dark:bg-[#1a1b1e] border border-gray-200 dark:border-gray-800 rounded-lg overflow-hidden">
-          <table className="w-full">
-            <thead>
-              <tr className="border-b border-gray-200 dark:border-gray-800">
-                <th className="text-left text-gray-600 dark:text-gray-400 text-sm font-normal px-6 py-3">TITLE</th>
-                <th className="text-left text-gray-600 dark:text-gray-400 text-sm font-normal px-6 py-3">STATUS</th>
-                <th className="text-left text-gray-600 dark:text-gray-400 text-sm font-normal px-6 py-3">DATE</th>
-                <th className="text-right text-gray-600 dark:text-gray-400 text-sm font-normal px-6 py-3">ACTIONS</th>
-              </tr>
-            </thead>
-            <tbody>
-              {posts.map((post) => (
-                <tr key={post.id} className="border-t border-gray-200 dark:border-gray-800">
-                  <td className="px-6 py-4">
-                    <div className="text-black dark:text-white">{post.title}</div>
-                    <div className="text-sm text-gray-600 dark:text-gray-400">{post.excerpt}</div>
-                  </td>
-                  <td className="px-6 py-4">
-                    <span className={`inline-block px-2 py-1 text-xs rounded-full ${
-                      post.published 
-                        ? 'bg-green-100 dark:bg-green-900/20 text-green-700 dark:text-green-400' 
-                        : 'bg-yellow-100 dark:bg-yellow-900/20 text-yellow-700 dark:text-yellow-400'
-                    }`}>
-                      {post.published ? 'Published' : 'Draft'}
-                    </span>
-                  </td>
-                  <td className="px-6 py-4 text-gray-600 dark:text-gray-400">
-                    {new Date(post.created_at).toLocaleDateString('en-US', {
-                      year: 'numeric',
-                      month: 'short',
-                      day: 'numeric'
-                    })}
-                  </td>
-                  <td className="px-6 py-4 text-right space-x-4">
-                    <Link href={`/admin/posts/${post.id}`} className="text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300">
-                      Edit
-                    </Link>
-                    <button
-                      onClick={() => togglePublish(post)}
-                      className="text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300"
-                    >
-                      {post.published ? 'Unpublish' : 'Publish'}
-                    </button>
-                    <button
-                      onClick={() => deletePost(post.id)}
-                      className="text-red-600 dark:text-red-400 hover:text-red-800 dark:hover:text-red-300"
-                    >
-                      Delete
-                    </button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+        {error && (
+          <div className="mb-8 p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg text-red-600 dark:text-red-400">
+            {error}
+          </div>
+        )}
+
+        <Suspense fallback={<LoadingState />}>
+          {loading ? (
+            <LoadingState />
+          ) : (
+            <PostsTable 
+              posts={posts} 
+              onTogglePublish={togglePublish}
+              onDelete={deletePost}
+            />
+          )}
+        </Suspense>
       </div>
     </div>
   );

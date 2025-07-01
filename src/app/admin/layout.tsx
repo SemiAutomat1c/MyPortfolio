@@ -20,13 +20,14 @@ export default function AdminLayout({
           </Link>
           <div className="flex items-center space-x-8">
             <Link href="/about" className="text-gray-600 dark:text-gray-400 hover:text-black dark:hover:text-white transition-colors">About</Link>
-            <Link href="/my-work" className="text-gray-600 dark:text-gray-400 hover:text-black dark:hover:text-white transition-colors">My work</Link>
+            <Link href="/work" className="text-gray-600 dark:text-gray-400 hover:text-black dark:hover:text-white transition-colors">Work</Link>
             <Link href="/projects" className="text-gray-600 dark:text-gray-400 hover:text-black dark:hover:text-white transition-colors">Projects</Link>
             <Link href="/posts" className="text-gray-600 dark:text-gray-400 hover:text-black dark:hover:text-white transition-colors">Posts</Link>
-            <Link href="/contact" className="text-gray-600 dark:text-gray-400 hover:text-black dark:hover:text-white transition-colors">Contact Me</Link>
+            <Link href="/contact" className="text-gray-600 dark:text-gray-400 hover:text-black dark:hover:text-white transition-colors">Contact</Link>
             <button 
               onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
               className="text-gray-600 dark:text-gray-400 hover:text-black dark:hover:text-white transition-colors"
+              aria-label="Toggle theme"
             >
               {theme === 'dark' ? (
                 <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
