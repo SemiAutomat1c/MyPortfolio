@@ -1,10 +1,17 @@
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
 import type { Database } from '@/types/supabase';
 
-// Create a strongly typed Supabase client
+// Create a strongly typed Supabase client with persistent session handling
 export const supabase = createClientComponentClient<Database>({
   supabaseUrl: process.env.NEXT_PUBLIC_SUPABASE_URL,
   supabaseKey: process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
+  cookieOptions: {
+    name: 'supabase.auth.token',
+    domain: process.env.NEXT_PUBLIC_SITE_URL,
+    path: '/',
+    secure: process.env.NODE_ENV === 'production',
+    sameSite: 'lax',
+  },
 });
 
 // Function to verify blog images bucket access

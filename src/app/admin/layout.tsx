@@ -26,9 +26,15 @@ export default function AdminLayout({
     try {
       const { error } = await supabase.auth.signOut();
       if (error) throw error;
-      // No need to manually redirect, AuthContext will handle it
+      
+      // Force a router refresh to update auth state
+      router.refresh();
+      // Redirect to login
+      router.push('/login');
     } catch (error) {
       console.error('Error logging out:', error);
+      // Still try to redirect to login on error
+      router.push('/login');
     }
   };
 
