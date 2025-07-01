@@ -30,7 +30,7 @@ function PostsLoading() {
 // Blog posts component
 async function LatestPosts() {
   const posts = await getAllPosts();
-  const latestPosts = posts.slice(0, 3);
+  const latestPosts = posts.slice(0, 2);
 
   if (latestPosts.length === 0) {
     return (
@@ -72,6 +72,20 @@ async function LatestPosts() {
           </Link>
         </div>
       ))}
+
+      {posts.length > 2 && (
+        <div className="text-center mt-8">
+          <Link 
+            href="/posts" 
+            className="inline-flex items-center justify-center px-6 py-3 border border-transparent text-base font-medium rounded-md text-white bg-primary hover:bg-primary/90 transition-colors duration-200"
+          >
+            View all {posts.length} posts
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 ml-2" viewBox="0 0 20 20" fill="currentColor">
+              <path fillRule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clipRule="evenodd" />
+            </svg>
+          </Link>
+        </div>
+      )}
     </div>
   );
 }
@@ -310,17 +324,11 @@ export default function Home() {
         </div>
       </section>
       
-      {/* Blog Posts Section */}
-      <section className="py-12">
+      {/* Latest Blog Posts Section */}
+      <section className="py-12 bg-gray-50 dark:bg-gray-900/50">
         <div className="container max-w-3xl mx-auto px-4">
           <div className="flex justify-between items-center mb-12">
             <h2 className="text-4xl font-bold text-gray-900 dark:text-white">Latest blog posts</h2>
-            <Link 
-              href="/posts"
-              className="text-primary hover:text-blue-600 transition-colors"
-            >
-              View all posts →
-            </Link>
           </div>
           
           <Suspense fallback={<PostsLoading />}>
