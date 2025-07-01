@@ -9,7 +9,8 @@ import { SiTypescript, SiVite } from 'react-icons/si';
 import Image from 'next/image';
 import { getAllPosts } from '@/lib/posts';
 
-export const fetchCache = 'force-no-store';
+// Add revalidation time
+export const revalidate = 60; // Revalidate every 60 seconds
 
 export default async function Home() {
   const posts = await getAllPosts();

@@ -1,5 +1,4 @@
 import { supabase } from './supabase';
-import { cache } from 'react';
 
 export type Post = {
   id: string;
@@ -13,8 +12,7 @@ export type Post = {
   updated_at: string;
 };
 
-// Cache the getAllPosts function
-export const getAllPosts = cache(async (includeUnpublished = false): Promise<Post[]> => {
+export async function getAllPosts(includeUnpublished = false): Promise<Post[]> {
   const query = supabase
     .from('posts')
     .select('*')
@@ -32,10 +30,9 @@ export const getAllPosts = cache(async (includeUnpublished = false): Promise<Pos
   }
 
   return data || [];
-});
+}
 
-// Cache the getPostBySlug function
-export const getPostBySlug = cache(async (slug: string): Promise<Post | null> => {
+export async function getPostBySlug(slug: string): Promise<Post | null> {
   const { data, error } = await supabase
     .from('posts')
     .select('*')
@@ -49,4 +46,4 @@ export const getPostBySlug = cache(async (slug: string): Promise<Post | null> =>
   }
 
   return data;
-}); 
+} 
