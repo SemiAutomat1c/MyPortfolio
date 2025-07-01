@@ -6,13 +6,77 @@ import { FaHtml5, FaCss3Alt, FaJs, FaReact, FaNodeJs, FaJava } from 'react-icons
 import { SiTypescript, SiVite } from 'react-icons/si';
 import Image from 'next/image';
 import { getAllPosts } from '@/lib/posts';
+import { Suspense } from 'react';
 
-export const dynamic = 'force-dynamic';
+// Use ISR with a reasonable revalidation period
+export const revalidate = 3600; // Revalidate every hour
 
-export default async function Home() {
+// Loading component for blog posts
+function PostsLoading() {
+  return (
+    <div className="space-y-8">
+      {[1, 2, 3].map((i) => (
+        <div key={i} className="animate-pulse">
+          <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-1/4 mb-2"></div>
+          <div className="h-8 bg-gray-200 dark:bg-gray-700 rounded w-3/4 mb-4"></div>
+          <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-full mb-2"></div>
+          <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-2/3"></div>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+// Blog posts component
+async function LatestPosts() {
   const posts = await getAllPosts();
-  const latestPosts = posts.slice(0, 3); // Get only the 3 most recent posts
+  const latestPosts = posts.slice(0, 3);
 
+  if (latestPosts.length === 0) {
+    return (
+      <div className="text-center text-gray-600 dark:text-gray-400">
+        <p>No blog posts yet. Check back soon!</p>
+      </div>
+    );
+  }
+
+  return (
+    <div className="space-y-8">
+      {latestPosts.map((post) => (
+        <div key={post.slug} className="bg-white dark:bg-dark border border-gray-200 dark:border-gray-800 rounded-lg p-8 shadow-sm">
+          <div className="text-gray-600 dark:text-gray-400 mb-2">
+            {new Date(post.created_at).toLocaleDateString('en-US', {
+              year: 'numeric',
+              month: 'long',
+              day: 'numeric'
+            })}
+          </div>
+          <h3 className="text-2xl font-bold mb-3 text-gray-900 dark:text-white">
+            <Link href={`/posts/${post.slug}`} className="hover:text-primary transition-colors">
+              {post.title}
+            </Link>
+          </h3>
+          <p className="text-gray-700 dark:text-gray-300 mb-4">{post.excerpt}</p>
+          <div className="flex items-center gap-2 mb-4">
+            {post.tags.map((tag) => (
+              <span 
+                key={tag}
+                className="px-3 py-1 bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 rounded-full text-sm"
+              >
+                {tag}
+              </span>
+            ))}
+          </div>
+          <Link href={`/posts/${post.slug}`} className="text-primary hover:underline">
+            Read more
+          </Link>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+export default function Home() {
   // Sample work data
   const workItems = [
     {
@@ -246,7 +310,7 @@ export default async function Home() {
         </div>
       </section>
       
-      {/* Latest Blog Posts Section */}
+      {/* Blog Posts Section */}
       <section className="py-12">
         <div className="container max-w-3xl mx-auto px-4">
           <div className="flex justify-between items-center mb-12">
@@ -258,45 +322,10 @@ export default async function Home() {
               View all posts →
             </Link>
           </div>
-
-          <div className="space-y-8">
-            {latestPosts.map((post) => (
-              <div key={post.slug} className="bg-white dark:bg-dark border border-gray-200 dark:border-gray-800 rounded-lg p-8 shadow-sm">
-                <div className="text-gray-600 dark:text-gray-400 mb-2">
-                  {new Date(post.created_at).toLocaleDateString('en-US', {
-                    year: 'numeric',
-                    month: 'long',
-                    day: 'numeric'
-                  })}
-                </div>
-                <h3 className="text-2xl font-bold mb-3 text-gray-900 dark:text-white">
-                  <Link href={`/posts/${post.slug}`} className="hover:text-primary transition-colors">
-                    {post.title}
-                  </Link>
-                </h3>
-                <p className="text-gray-700 dark:text-gray-300 mb-4">{post.excerpt}</p>
-                <div className="flex items-center gap-2 mb-4">
-                  {post.tags.map((tag) => (
-                    <span 
-                      key={tag}
-                      className="px-3 py-1 bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 rounded-full text-sm"
-                    >
-                      {tag}
-                    </span>
-                  ))}
-                </div>
-                <Link href={`/posts/${post.slug}`} className="text-primary hover:underline">
-                  Read more
-                </Link>
-              </div>
-            ))}
-          </div>
-
-          {latestPosts.length === 0 && (
-            <div className="text-center text-gray-600 dark:text-gray-400">
-              <p>No blog posts yet. Check back soon!</p>
-            </div>
-          )}
+          
+          <Suspense fallback={<PostsLoading />}>
+            <LatestPosts />
+          </Suspense>
         </div>
       </section>
     </>
