@@ -36,17 +36,31 @@ function LoginForm() {
     setError(null);
 
     try {
-      const { error } = await supabase.auth.signInWithPassword({
+      // Clear any existing sessions first
+      await supabase.auth.signOut();
+      
+      // Attempt to sign in
+      const { data, error: signInError } = await supabase.auth.signInWithPassword({
         email,
         password,
       });
 
-      if (error) throw error;
-      
-      // No need to manually redirect here as the AuthContext will handle the session change
+      if (signInError) throw signInError;
+
+      if (data?.session) {
+        // Force a router refresh to update auth state
+        router.refresh();
+        // Redirect to admin
+        router.push('/admin/posts');
+      } else {
+        throw new Error('No session created after login');
+      }
     } catch (error: any) {
       console.error('Login error:', error);
-      setError(error.message);
+      setError(error.message || 'Failed to login. Please try again.');
+      
+      // Clear form on error
+      setPassword('');
     } finally {
       setLoading(false);
     }
