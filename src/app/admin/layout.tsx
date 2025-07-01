@@ -2,6 +2,8 @@
 
 import Link from 'next/link';
 import { useTheme } from 'next-themes';
+import { useRouter } from 'next/navigation';
+import { supabase } from '@/lib/supabase';
 
 export default function AdminLayout({
   children,
@@ -9,6 +11,17 @@ export default function AdminLayout({
   children: React.ReactNode;
 }) {
   const { theme, setTheme } = useTheme();
+  const router = useRouter();
+
+  const handleLogout = async () => {
+    try {
+      const { error } = await supabase.auth.signOut();
+      if (error) throw error;
+      router.push('/login');
+    } catch (error) {
+      console.error('Error logging out:', error);
+    }
+  };
 
   return (
     <div className="min-h-screen bg-white dark:bg-dark">
@@ -38,6 +51,12 @@ export default function AdminLayout({
                   <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z" />
                 </svg>
               )}
+            </button>
+            <button
+              onClick={handleLogout}
+              className="text-gray-600 dark:text-gray-400 hover:text-black dark:hover:text-white transition-colors"
+            >
+              Logout
             </button>
           </div>
         </div>
