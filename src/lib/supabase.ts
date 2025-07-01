@@ -5,12 +5,15 @@ import type { Database } from '@/types/supabase';
 export const supabase = createClientComponentClient<Database>({
   supabaseUrl: process.env.NEXT_PUBLIC_SUPABASE_URL,
   supabaseKey: process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
-  cookieOptions: {
-    name: 'supabase.auth.token',
-    domain: process.env.NEXT_PUBLIC_SITE_URL,
-    path: '/',
-    secure: process.env.NODE_ENV === 'production',
-    sameSite: 'lax',
+  options: {
+    global: {
+      fetch: (url, options) => {
+        return fetch(url, {
+          ...options,
+          credentials: 'include',
+        });
+      },
+    },
   },
 });
 

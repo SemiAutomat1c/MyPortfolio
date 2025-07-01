@@ -24,16 +24,29 @@ export default function AdminLayout({
 
   const handleLogout = async () => {
     try {
-      const { error } = await supabase.auth.signOut();
-      if (error) throw error;
+      // Clear any local storage or cookies first
+      if (typeof window !== 'undefined') {
+        localStorage.removeItem('supabase.auth.token');
+        document.cookie = 'supabase.auth.token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
+        // Also clear any other potential auth-related items
+        localStorage.removeItem('sb-wmjayfqmfcgdgfefclhn-auth-token');
+        document.cookie = 'sb-wmjayfqmfcgdgfefclhn-auth-token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
+      }
       
-      // Force a router refresh to update auth state
+      // Try to sign out
+      await supabase.auth.signOut();
+      
+      // Force a router refresh and navigation
       router.refresh();
-      // Redirect to login
       router.push('/login');
+      
+      // Force a page reload as a last resort
+      if (typeof window !== 'undefined') {
+        window.location.href = '/login';
+      }
     } catch (error) {
       console.error('Error logging out:', error);
-      // Still try to redirect to login on error
+      // Still try to redirect to login even if there's an error
       router.push('/login');
     }
   };
