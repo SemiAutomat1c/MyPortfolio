@@ -1,0 +1,48 @@
+---
+title: 'Building a GCash Transaction Verifier'
+date: '2024-01-07'
+excerpt: 'How I built a tool to verify GCash transactions and prevent scams using Next.js and modern web technologies.'
+tags: ['project', 'next.js', 'typescript', 'security']
+---
+
+# Building a GCash Transaction Verifier
+
+As online scams become more sophisticated, I noticed a growing need for tools to verify digital transactions. This led me to create the GCash Transaction Verifier, a web application that helps users verify the authenticity of GCash transactions.
+
+## The Problem
+
+Many people fall victim to fake GCash transaction screenshots. Scammers often use edited images to:
+- Fake payment confirmations
+- Create false proof of transfers
+- Manipulate transaction details
+
+## The Solution
+
+I developed a web-based tool that:
+1. Analyzes transaction screenshots
+2. Verifies key elements like:
+   - Transaction ID format
+   - Date and time consistency
+   - Visual authenticity markers
+
+## Technical Implementation
+
+The project uses several modern technologies:
+
+```typescript
+// Example of transaction ID validation
+function validateTransactionId(id: string): boolean {
+  // GCash transaction IDs follow a specific pattern
+  const pattern = /^[0-9]{12}$/;
+  return pattern.test(id);
+}
+```
+
+## Future Improvements
+
+I'm planning to add:
+- Machine learning for better image analysis
+- API integration with GCash (if possible)
+- Batch verification for multiple transactions
+
+Stay tuned for more updates on this project! 
