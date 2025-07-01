@@ -2,7 +2,7 @@ import { notFound } from 'next/navigation';
 import { getPostBySlug } from '@/lib/posts';
 import PostContent from '@/components/PostContent';
 
-export const fetchCache = 'force-no-store';
+export const revalidate = 60; // Revalidate every 60 seconds
 
 export async function generateMetadata({ params }: { params: { slug: string } }) {
   const post = await getPostBySlug(params.slug);

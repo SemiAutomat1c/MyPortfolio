@@ -2,7 +2,7 @@ import { Metadata } from 'next';
 import Link from 'next/link';
 import { getAllPosts } from '@/lib/posts';
 
-export const fetchCache = 'force-no-store';
+export const revalidate = 60; // Revalidate every 60 seconds
 
 export const metadata: Metadata = {
   title: 'Blog Posts | Ryan Deniega',
