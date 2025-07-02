@@ -7,6 +7,7 @@ import { SiTypescript, SiVite } from 'react-icons/si';
 import Image from 'next/image';
 import { getAllPosts } from '@/lib/posts';
 import { Suspense } from 'react';
+import PageTransition from '@/components/PageTransition';
 
 // Use ISR with a reasonable revalidation period
 export const revalidate = 3600; // Revalidate every hour
@@ -142,206 +143,208 @@ export default function Home() {
   ];
 
   return (
-    <>
-      <Hero />
-      
-      {/* What I work with Section */}
-      <Skills />
-      
-      {/* Experience Section */}
-      <Experience />
-      
-      {/* My Work Section */}
-      <section className="py-12">
-        <div className="container max-w-3xl mx-auto px-4">
-          <h2 className="text-4xl font-bold mb-12 text-gray-900 dark:text-white">My work</h2>
-          
-          <div className="space-y-8">
-            {workItems.map((item, index) => (
-              <div key={index} className="relative group">
-                {/* Work in Progress Badge */}
-                {item.status === 'in-progress' && (
-                  <div className="absolute top-4 left-4 z-10">
-                    <div className="bg-yellow-500/90 backdrop-blur-sm text-black px-3 py-1 rounded-full text-sm font-medium flex items-center gap-1.5">
-                      <span className="relative flex h-2 w-2">
-                        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-yellow-600 opacity-75"></span>
-                        <span className="relative inline-flex rounded-full h-2 w-2 bg-yellow-600"></span>
+    <PageTransition>
+      <>
+        <Hero />
+        
+        {/* What I work with Section */}
+        <Skills />
+        
+        {/* Experience Section */}
+        <Experience />
+        
+        {/* My Work Section */}
+        <section className="py-12">
+          <div className="container max-w-3xl mx-auto px-4">
+            <h2 className="text-4xl font-bold mb-12 text-gray-900 dark:text-white">My work</h2>
+            
+            <div className="space-y-8">
+              {workItems.map((item, index) => (
+                <div key={index} className="relative group">
+                  {/* Work in Progress Badge */}
+                  {item.status === 'in-progress' && (
+                    <div className="absolute top-4 left-4 z-10">
+                      <div className="bg-yellow-500/90 backdrop-blur-sm text-black px-3 py-1 rounded-full text-sm font-medium flex items-center gap-1.5">
+                        <span className="relative flex h-2 w-2">
+                          <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-yellow-600 opacity-75"></span>
+                          <span className="relative inline-flex rounded-full h-2 w-2 bg-yellow-600"></span>
+                        </span>
+                        Work in Progress
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Main project link */}
+                  <Link 
+                    href={`/work/${item.slug}`}
+                    className="block relative h-[400px] rounded-lg overflow-hidden"
+                  >
+                    <Image 
+                      src={item.image} 
+                      alt={item.title}
+                      fill
+                      style={{ objectFit: 'cover' }}
+                      className="transition-transform duration-300 group-hover:scale-105"
+                      quality={95}
+                    />
+                    
+                    {/* Gradient overlay for text visibility */}
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                    
+                    {/* Content */}
+                    <div className="absolute bottom-0 left-0 right-0 p-6 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                      <h3 className="text-2xl font-bold text-white mb-2 drop-shadow-md">
+                        {item.title}
+                      </h3>
+                      
+                      <div className="flex flex-wrap gap-1.5 mb-3">
+                        {item.technologies?.map((tech, i) => (
+                          <span 
+                            key={i} 
+                            className="bg-white/20 text-white px-2 py-0.5 rounded-full text-sm backdrop-blur-sm"
+                          >
+                            {tech}
+                          </span>
+                        ))}
+                      </div>
+                      
+                      <span className="text-white text-sm group-hover:translate-x-1 transition-transform duration-300 inline-block">
+                        Learn more →
                       </span>
-                      Work in Progress
                     </div>
-                  </div>
-                )}
+                  </Link>
 
-                {/* Main project link */}
-                <Link 
-                  href={`/work/${item.slug}`}
-                  className="block relative h-[400px] rounded-lg overflow-hidden"
-                >
-                  <Image 
-                    src={item.image} 
-                    alt={item.title}
-                    fill
-                    style={{ objectFit: 'cover' }}
-                    className="transition-transform duration-300 group-hover:scale-105"
-                    quality={95}
-                  />
-                  
-                  {/* Gradient overlay for text visibility */}
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-                  
-                  {/* Content */}
-                  <div className="absolute bottom-0 left-0 right-0 p-6 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                    <h3 className="text-2xl font-bold text-white mb-2 drop-shadow-md">
-                      {item.title}
-                    </h3>
-                    
-                    <div className="flex flex-wrap gap-1.5 mb-3">
-                      {item.technologies?.map((tech, i) => (
-                        <span 
-                          key={i} 
-                          className="bg-white/20 text-white px-2 py-0.5 rounded-full text-sm backdrop-blur-sm"
-                        >
-                          {tech}
-                        </span>
-                      ))}
-                    </div>
-                    
-                    <span className="text-white text-sm group-hover:translate-x-1 transition-transform duration-300 inline-block">
-                      Learn more →
-                    </span>
+                  {/* External links - positioned absolutely over the main link */}
+                  <div className="absolute top-4 right-4 flex gap-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                    {item.demoLink && (
+                      <Link 
+                        href={item.demoLink}
+                        target="_blank"
+                        rel="noopener noreferrer" 
+                        className="text-white hover:text-primary transition-colors drop-shadow-md bg-black/20 backdrop-blur-sm px-3 py-1 rounded-full text-sm"
+                      >
+                        Live Demo
+                      </Link>
+                    )}
+                    {item.githubLink && (
+                      <Link 
+                        href={item.githubLink}
+                        target="_blank"
+                        rel="noopener noreferrer" 
+                        className="text-white hover:text-primary transition-colors drop-shadow-md bg-black/20 backdrop-blur-sm px-3 py-1 rounded-full text-sm"
+                      >
+                        GitHub
+                      </Link>
+                    )}
                   </div>
-                </Link>
-
-                {/* External links - positioned absolutely over the main link */}
-                <div className="absolute top-4 right-4 flex gap-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                  {item.demoLink && (
-                    <Link 
-                      href={item.demoLink}
-                      target="_blank"
-                      rel="noopener noreferrer" 
-                      className="text-white hover:text-primary transition-colors drop-shadow-md bg-black/20 backdrop-blur-sm px-3 py-1 rounded-full text-sm"
-                    >
-                      Live Demo
-                    </Link>
-                  )}
-                  {item.githubLink && (
-                    <Link 
-                      href={item.githubLink}
-                      target="_blank"
-                      rel="noopener noreferrer" 
-                      className="text-white hover:text-primary transition-colors drop-shadow-md bg-black/20 backdrop-blur-sm px-3 py-1 rounded-full text-sm"
-                    >
-                      GitHub
-                    </Link>
-                  )}
                 </div>
-              </div>
-            ))}
+              ))}
+            </div>
           </div>
-        </div>
-      </section>
-      
-      {/* My Personal Projects Section */}
-      <section className="py-12">
-        <div className="container max-w-3xl mx-auto px-4">
-          <h2 className="text-4xl font-bold mb-12 text-gray-900 dark:text-white">My personal projects</h2>
-          
-          <div className="space-y-8">
-            {projects.map((project, index) => (
-              <div key={index} className="relative group">
-                {/* Maintenance Badge */}
-                {project.status === 'maintenance' && (
-                  <div className="absolute top-4 left-4 z-10">
-                    <div className="bg-yellow-500/90 backdrop-blur-sm text-black px-3 py-1 rounded-full text-sm font-medium flex items-center gap-1.5">
-                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
-                      </svg>
-                      Maintenance
+        </section>
+        
+        {/* My Personal Projects Section */}
+        <section className="py-12">
+          <div className="container max-w-3xl mx-auto px-4">
+            <h2 className="text-4xl font-bold mb-12 text-gray-900 dark:text-white">My personal projects</h2>
+            
+            <div className="space-y-8">
+              {projects.map((project, index) => (
+                <div key={index} className="relative group">
+                  {/* Maintenance Badge */}
+                  {project.status === 'maintenance' && (
+                    <div className="absolute top-4 left-4 z-10">
+                      <div className="bg-yellow-500/90 backdrop-blur-sm text-black px-3 py-1 rounded-full text-sm font-medium flex items-center gap-1.5">
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                        </svg>
+                        Maintenance
+                      </div>
                     </div>
-                  </div>
-                )}
+                  )}
 
-                {/* Main project link */}
-                <Link 
-                  href={project.link}
-                  className="block relative h-[300px] rounded-lg overflow-hidden"
-                >
-                  <Image 
-                    src={project.image} 
-                    alt={project.title}
-                    fill
-                    style={{ objectFit: 'cover' }}
-                    className="transition-transform duration-300 group-hover:scale-105"
-                    quality={95}
-                  />
-                  
-                  {/* Gradient overlay for text visibility */}
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-                  
-                  {/* Content */}
-                  <div className="absolute bottom-0 left-0 right-0 p-6 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                    <h3 className="text-2xl font-bold text-white mb-2 drop-shadow-md">
-                      {project.title}
-                    </h3>
+                  {/* Main project link */}
+                  <Link 
+                    href={project.link}
+                    className="block relative h-[300px] rounded-lg overflow-hidden"
+                  >
+                    <Image 
+                      src={project.image} 
+                      alt={project.title}
+                      fill
+                      style={{ objectFit: 'cover' }}
+                      className="transition-transform duration-300 group-hover:scale-105"
+                      quality={95}
+                    />
                     
-                    <div className="flex flex-wrap gap-1.5 mb-3">
-                      {project.technologies?.map((tech, i) => (
-                        <span 
-                          key={i} 
-                          className="bg-white/20 text-white px-2 py-0.5 rounded-full text-sm backdrop-blur-sm"
-                        >
-                          {tech}
-                        </span>
-                      ))}
+                    {/* Gradient overlay for text visibility */}
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                    
+                    {/* Content */}
+                    <div className="absolute bottom-0 left-0 right-0 p-6 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                      <h3 className="text-2xl font-bold text-white mb-2 drop-shadow-md">
+                        {project.title}
+                      </h3>
+                      
+                      <div className="flex flex-wrap gap-1.5 mb-3">
+                        {project.technologies?.map((tech, i) => (
+                          <span 
+                            key={i} 
+                            className="bg-white/20 text-white px-2 py-0.5 rounded-full text-sm backdrop-blur-sm"
+                          >
+                            {tech}
+                          </span>
+                        ))}
+                      </div>
+                      
+                      <span className="text-white text-sm group-hover:translate-x-1 transition-transform duration-300 inline-block">
+                        Learn more →
+                      </span>
                     </div>
-                    
-                    <span className="text-white text-sm group-hover:translate-x-1 transition-transform duration-300 inline-block">
-                      Learn more →
-                    </span>
-                  </div>
-                </Link>
+                  </Link>
 
-                {/* External links - positioned absolutely over the main link */}
-                <div className="absolute top-4 right-4 flex gap-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                  {project.demoLink && (
-                    <Link 
-                      href={project.demoLink}
-                      target="_blank"
-                      rel="noopener noreferrer" 
-                      className="text-white hover:text-primary transition-colors drop-shadow-md bg-black/20 backdrop-blur-sm px-3 py-1 rounded-full text-sm"
-                    >
-                      Live Demo
-                    </Link>
-                  )}
-                  {project.githubLink && (
-                    <Link 
-                      href={project.githubLink}
-                      target="_blank"
-                      rel="noopener noreferrer" 
-                      className="text-white hover:text-primary transition-colors drop-shadow-md bg-black/20 backdrop-blur-sm px-3 py-1 rounded-full text-sm"
-                    >
-                      GitHub
-                    </Link>
-                  )}
+                  {/* External links - positioned absolutely over the main link */}
+                  <div className="absolute top-4 right-4 flex gap-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                    {project.demoLink && (
+                      <Link 
+                        href={project.demoLink}
+                        target="_blank"
+                        rel="noopener noreferrer" 
+                        className="text-white hover:text-primary transition-colors drop-shadow-md bg-black/20 backdrop-blur-sm px-3 py-1 rounded-full text-sm"
+                      >
+                        Live Demo
+                      </Link>
+                    )}
+                    {project.githubLink && (
+                      <Link 
+                        href={project.githubLink}
+                        target="_blank"
+                        rel="noopener noreferrer" 
+                        className="text-white hover:text-primary transition-colors drop-shadow-md bg-black/20 backdrop-blur-sm px-3 py-1 rounded-full text-sm"
+                      >
+                        GitHub
+                      </Link>
+                    )}
+                  </div>
                 </div>
-              </div>
-            ))}
+              ))}
+            </div>
           </div>
-        </div>
-      </section>
-      
-      {/* Latest Blog Posts Section */}
-      <section className="py-12">
-        <div className="container max-w-3xl mx-auto px-4">
-          <div className="flex justify-between items-center mb-12">
-            <h2 className="text-4xl font-bold text-gray-900 dark:text-white">Latest blog posts</h2>
+        </section>
+        
+        {/* Latest Blog Posts Section */}
+        <section className="py-12">
+          <div className="container max-w-3xl mx-auto px-4">
+            <div className="flex justify-between items-center mb-12">
+              <h2 className="text-4xl font-bold text-gray-900 dark:text-white">Latest blog posts</h2>
+            </div>
+            
+            <Suspense fallback={<PostsLoading />}>
+              <LatestPosts />
+            </Suspense>
           </div>
-          
-          <Suspense fallback={<PostsLoading />}>
-            <LatestPosts />
-          </Suspense>
-        </div>
-      </section>
-    </>
+        </section>
+      </>
+    </PageTransition>
   );
 } 
