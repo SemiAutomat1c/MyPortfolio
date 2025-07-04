@@ -1,6 +1,6 @@
 import { Metadata } from 'next';
 import Image from 'next/image';
-import { FaGithub, FaLinkedin, FaCode } from 'react-icons/fa';
+import { FaGithub, FaLinkedin, FaCode, FaDownload } from 'react-icons/fa';
 
 export const metadata: Metadata = {
   title: 'About | Ryan Deniega',
@@ -157,7 +157,18 @@ export default function AboutPage() {
 
       {/* Professional Interests */}
       <div className="bg-white dark:bg-dark border border-gray-200 dark:border-gray-800 rounded-lg p-8 shadow-sm">
-        <h2 className="text-2xl font-bold mb-6 text-gray-900 dark:text-white">What I'm Looking For</h2>
+        <div className="flex justify-between items-start mb-6">
+          <h2 className="text-2xl font-bold text-gray-900 dark:text-white">What I'm Looking For</h2>
+          <a
+            href="/Resume.pdf"
+            download
+            className="inline-flex items-center justify-center w-8 h-8 bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors"
+            title="Download Resume"
+          >
+            <FaDownload className="text-sm" />
+            <span className="sr-only">Download Resume</span>
+          </a>
+        </div>
         
         <p className="text-lg mb-6 text-gray-700 dark:text-gray-300">
           I'm actively seeking job opportunities in web development where I can:

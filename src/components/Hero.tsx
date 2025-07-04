@@ -2,7 +2,7 @@
 
 import { motion } from 'framer-motion';
 import Link from 'next/link';
-import { FaEnvelope, FaGithub, FaInstagram } from 'react-icons/fa';
+import { FaEnvelope, FaGithub, FaInstagram, FaDownload } from 'react-icons/fa';
 import HeroBackground from './HeroBackground';
 
 const Hero = () => {
@@ -101,6 +101,17 @@ const Hero = () => {
               whileHover="hover"
             >
               <FaInstagram />
+            </motion.a>
+            <motion.a
+              href="/Resume.pdf"
+              download
+              className="text-xl text-gray-600 hover:text-gray-900 transition-colors dark:text-gray-400 dark:hover:text-white"
+              aria-label="Download Resume"
+              title="Download Resume"
+              variants={socialIconVariants}
+              whileHover="hover"
+            >
+              <FaDownload />
             </motion.a>
           </motion.div>
           

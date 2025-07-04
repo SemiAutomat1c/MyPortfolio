@@ -1,0 +1,49 @@
+Ryan Christian Deniega
+Entry-Level Web Developer
+
+ryan.deniega13@gmail.com                    Tagum City, Philippines                    Portfolio: [Your Portfolio URL]
+
+Computer Science student specializing in modern web development with React, Next.js, and TypeScript. Passionate about building user-friendly applications and continuously learning new technologies.
+
+EDUCATION
+
+UM Tagum College - B.S., Computer Science
+2020 - Present, Currently in 3rd Year
+• Relevant coursework: Data Structures & Algorithms, Software Development, Web Development, Database Systems
+• Focus on practical application of programming concepts and collaborative development
+
+PROJECTS
+
+GadgetTrack - Full Stack Developer
+• Built a comprehensive POS system using Next.js, TypeScript, and Supabase with real-time inventory tracking
+• Implemented user authentication, role-based access, and database management
+• Developed responsive admin dashboard for inventory and sales management
+
+Video Editor Portfolio Website
+• Created modern portfolio site with Next.js, featuring responsive design and theme switching
+• Implemented smooth animations using Framer Motion and optimized performance
+• Integrated contact form system and dynamic content management
+
+Book Management System
+• Developed library management application with user authentication and role-based access
+• Implemented CRUD operations for book and user management using modern web stack
+• Created intuitive interface for book tracking and user interactions
+
+TECHNICAL SKILLS
+
+Frontend Development
+• Languages & Frameworks: JavaScript, TypeScript, React, Next.js
+• Styling & Design: HTML5, CSS3, Tailwind CSS, Framer Motion
+• State Management & Tools: Git, REST APIs
+
+Backend Development
+• Technologies: Node.js, PostgreSQL, Supabase, Firebase
+• Services: Authentication, Database Management, API Integration
+
+LEARNING JOURNEY
+
+Self-Directed Development (2023 - Present)
+• Built multiple full-stack applications focusing on modern web development practices
+• Implemented authentication systems and database management in various projects
+• Practiced version control, project management, and collaborative development
+• Continuously learning new technologies and best practices through hands-on projects 
