@@ -60,7 +60,7 @@ const Skills = () => {
       <SkillsDecoration />
       <div className="container max-w-3xl mx-auto px-4">
         <motion.h2 
-          className="text-4xl font-bold mb-12 text-gray-900 dark:text-white text-center"
+          className="text-3xl md:text-4xl font-bold mb-8 md:mb-12 text-gray-900 dark:text-white text-center"
           initial={{ opacity: 0, y: -20 }}
           whileInView={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
@@ -71,7 +71,7 @@ const Skills = () => {
 
         <div className="mb-8">
           <motion.h3 
-            className="text-xl font-semibold mb-6 text-gray-800 dark:text-gray-200 text-center"
+            className="text-lg md:text-xl font-semibold mb-4 md:mb-6 text-gray-800 dark:text-gray-200 text-center"
             initial={{ opacity: 0 }}
             whileInView={{ opacity: 1 }}
             transition={{ duration: 0.5 }}
@@ -80,7 +80,7 @@ const Skills = () => {
             Frontend
           </motion.h3>
           <motion.div 
-            className="flex flex-wrap justify-center gap-x-12 gap-y-6"
+            className="grid grid-cols-4 md:flex md:flex-wrap justify-center gap-4 md:gap-x-12 md:gap-y-6"
             variants={containerVariants}
             initial="hidden"
             whileInView="visible"
@@ -95,14 +95,14 @@ const Skills = () => {
                 onHoverStart={() => setHoveredSkill(skill.name)}
                 onHoverEnd={() => setHoveredSkill(null)}
               >
-                <div className="text-3xl">
+                <div className="text-2xl md:text-3xl">
                   {skill.icon}
                 </div>
                 {hoveredSkill === skill.name && (
                   <motion.div
                     initial={{ opacity: 0, y: 5 }}
                     animate={{ opacity: 1, y: 0 }}
-                    className="absolute -bottom-8 whitespace-nowrap bg-gray-900 dark:bg-gray-700 text-white text-xs px-2 py-1 rounded"
+                    className="absolute -bottom-6 md:-bottom-8 whitespace-nowrap bg-gray-900 dark:bg-gray-700 text-white text-xs px-2 py-1 rounded"
                   >
                     {skill.name}
                   </motion.div>
@@ -114,7 +114,7 @@ const Skills = () => {
 
         <div>
           <motion.h3 
-            className="text-xl font-semibold mb-6 text-gray-800 dark:text-gray-200 text-center"
+            className="text-lg md:text-xl font-semibold mb-4 md:mb-6 text-gray-800 dark:text-gray-200 text-center"
             initial={{ opacity: 0 }}
             whileInView={{ opacity: 1 }}
             transition={{ duration: 0.5 }}
@@ -123,7 +123,7 @@ const Skills = () => {
             Backend & Tools
           </motion.h3>
           <motion.div 
-            className="flex flex-wrap justify-center gap-x-12 gap-y-6"
+            className="grid grid-cols-4 md:flex md:flex-wrap justify-center gap-4 md:gap-x-12 md:gap-y-6"
             variants={containerVariants}
             initial="hidden"
             whileInView="visible"
@@ -138,14 +138,14 @@ const Skills = () => {
                 onHoverStart={() => setHoveredSkill(skill.name)}
                 onHoverEnd={() => setHoveredSkill(null)}
               >
-                <div className="text-3xl">
+                <div className="text-2xl md:text-3xl">
                   {skill.icon}
                 </div>
                 {hoveredSkill === skill.name && (
                   <motion.div
                     initial={{ opacity: 0, y: 5 }}
                     animate={{ opacity: 1, y: 0 }}
-                    className="absolute -bottom-8 whitespace-nowrap bg-gray-900 dark:bg-gray-700 text-white text-xs px-2 py-1 rounded"
+                    className="absolute -bottom-6 md:-bottom-8 whitespace-nowrap bg-gray-900 dark:bg-gray-700 text-white text-xs px-2 py-1 rounded"
                   >
                     {skill.name}
                   </motion.div>
